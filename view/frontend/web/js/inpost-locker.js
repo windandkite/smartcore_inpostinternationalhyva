@@ -217,6 +217,7 @@ const InPostLockerModule = {
         widget.setAttribute('token', token);
         widget.setAttribute('config', 'parcelCollect');
         if (country) widget.setAttribute('country', country);
+        if (this.config?.language) widget.setAttribute('language', this.config.language);
         if (isSandbox) widget.setAttribute('sandbox', 'true');
 
         widget.setAttribute('onpoint', 'onpointselect');
