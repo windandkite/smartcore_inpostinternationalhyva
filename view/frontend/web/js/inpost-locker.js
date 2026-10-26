@@ -173,9 +173,9 @@ const InPostLockerModule = {
         const container = document.getElementById('inpost-map-container');
         if (!container) return;
 
-        const baseUrl = this.config?.isSandbox
+        const baseUrl = this.config?.geowidgetUrl || (this.config?.isSandbox
             ? 'https://sandbox-global-geowidget-sdk.easypack24.net'
-            : 'https://geowidget.inpost-group.com';
+            : 'https://geowidget.inpost-group.com');
 
         this.loadResource('link', {
             rel: 'stylesheet',
