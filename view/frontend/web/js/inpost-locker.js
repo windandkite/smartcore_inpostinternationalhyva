@@ -1,5 +1,44 @@
 const InPostLockerModule = {
-    validationRegistered: false,
+    /**
+     * Require a pickup point before the order can be placed, using Hyvä Checkout's shipping method validation.
+     */
+    registerValidation(method) {
+        this.elements = this.getElements();
+        this.config = this.getConfig();
+
+        if (typeof hyvaCheckout === 'undefined' || !method) {
+            return;
+        }
+
+        // Other methods are activated without the check, replacing the validation of a previously selected point method
+        hyvaCheckout.shipping.activate(method, this.isPointMethod(method)
+            ? { validate: () => this.validatePointSelected() }
+            : {});
+    },
+
+    isPointMethod(method) {
+        const pointCarriers = (this.config?.geowidgetShippingMethods || '').split(',').filter(Boolean);
+
+        return pointCarriers.includes((method || '').split('_')[0]);
+    },
+
+    validatePointSelected() {
+        const selectedMethod = document.querySelector('input[name="shipping-method-option"]:checked')?.value;
+
+        if (!this.isPointMethod(selectedMethod) || this.getBestSavedPoint()) {
+            return true;
+        }
+
+        const selectBtn = document.getElementById('inpost-select-picker');
+
+        hyvaCheckout.shipping.dispatchExceptionMessage(
+            selectBtn?.dataset.requiredMessage || 'Please select a pickup point for the chosen shipping method.',
+            'error'
+        );
+        selectBtn?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        return false;
+    },
 
     init() {
         this.elements = this.getElements();
@@ -246,6 +285,11 @@ const InPostLockerModule = {
         if (addressEl) addressEl.innerHTML = address.replace(/\n/g, '<br/>');
 
         document.getElementById('inpost_locker-selected').style.display = 'block';
+
+        const selectBtn = document.getElementById('inpost-select-picker');
+        if (selectBtn?.dataset.changeLabel) {
+            selectBtn.textContent = selectBtn.dataset.changeLabel;
+        }
     },
 
     getBestSavedPoint() {
@@ -340,4 +384,5 @@ if (document.readyState === 'loading') {
 
 window.addEventListener('checkout:shipping:method-activate', event => {
     InPostLockerModule.init();
+    InPostLockerModule.registerValidation(event.detail.method);
 });
