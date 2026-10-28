@@ -66,13 +66,13 @@
 }
 
 #inpost-locker-logo-wrapper {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    z-index: 10;
     display: flex;
     align-items: flex-start;
-    background: transparent;
+    margin-top: 0.75rem;
+}
+
+#inpost-locker-logo-wrapper:empty {
+    display: none;
 }
 #inpost-locker-logo-wrapper img {
     max-width: 100px;

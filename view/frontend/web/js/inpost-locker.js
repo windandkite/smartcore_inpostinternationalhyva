@@ -368,9 +368,6 @@ const InPostLockerModule = {
         img.src = logoSrc;
         img.alt = '';
 
-        const parent = selectedInput.closest('[id^="shipping-method-option-"]');
-        parent.style.position = 'relative';
-
         container.appendChild(img);
     }
 };
